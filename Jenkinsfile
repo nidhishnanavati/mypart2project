@@ -22,6 +22,11 @@ pipeline{
         sh 'docker push nidhish98/studentsurvey645:latest'
       }
     }
+    stage("Deploy image to deployment in cluster"){
+      steps {
+        sh 'kubectl set image deployment/hello-app studentsurvey645=nidhish98/studentsurvey645:latest -n jenkins-pipeline'
+      }
+    }  
   }
   post {
 	  always {
