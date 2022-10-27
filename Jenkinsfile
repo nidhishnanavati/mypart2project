@@ -1,5 +1,8 @@
 pipeline{
     agent any
+    environment {
+        DOCKERHUB_PASS = credentials('docker-pass')
+    }
     stages{
         stage("Build a new version of app on new commit"){
             steps{
@@ -8,7 +11,7 @@ pipeline{
                     sh 'rm -rf *.var'
                     sh 'jar -cvf mypart2project.war -C src/main/webapp .'
                     sh 'echo ${BUILD_TIMESTAMP}'
-                    sh 'docker login -u nidhish98 -p nidDocker@23'
+                    sh 'docker login -u nidhish98 -p ${DOCKERHUB_PASS}'
                     def customImage = docker.build("nidhish98/studentsurvey645:${BUILD_TIMESTAMP}'")
                 }
             }
