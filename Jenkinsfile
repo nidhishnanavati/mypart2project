@@ -11,7 +11,7 @@ pipeline{
                     sh 'rm -rf *.var'
                     sh 'jar -cvf mypart2project.war -C src/main/webapp .'
                     sh 'echo ${BUILD_TIMESTAMP}'
-                    def customImage = docker.build("nidhish98/studentsurvey645:${BUILD_TIMESTAMP}")
+                    def customImage = docker.build("nidhish98/studentsurvey645:1.0")
                 }
             }
         }
