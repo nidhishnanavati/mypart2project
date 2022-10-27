@@ -1,25 +1,29 @@
-pipeline
-{
-  agent any 
- tools { maven "Maven" }
- stages 
- {
-  stage("build maven")
-  {steps{ 
-   checkout([$class: 'GitSCM', brancgers: [[name: '*/main']], extensions: [], userRemoteConfig: [[url: 'https://github.com/nidhish-nanavati/mypart2project.git']]]) 
-         }
+
+pipeline{
+    agent any
+    environment {
+		DOCKERHUB_CREDENTIALS=credentials('docker-pass')
+	}
+  stages{
+    stage('Build') {
+      steps {
+        sh 'docker build -t nidhish98/studentsurvey645:latest .'
+      }
+    }
+    stage('Login') {
+      steps {
+        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+       }
+    }
+    stage("Push image to docker hub"){
+      steps {
+        sh 'docker push nidhish98/studentsurvey645:latest'
+      }
+    }
   }
-  
-  stage('Dcoker Build and tag')
-  { steps{
-  sh 'docker build -t mysurvey .'
-  sh 'docker image tag mysurvey nidish98/mysurvey:latest'
-  }
-  }
-  
-  
-  
-  
-  
- }
+  post {
+	  always {
+			sh 'docker logout'
+		}
+	}    
 }
