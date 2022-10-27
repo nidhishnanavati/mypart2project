@@ -6,7 +6,7 @@ pipeline
  {
   stage("build maven")
   {steps{ 
-   checkout([$class: 'GitSCM', brancgers: [[name: '*/main']], extensions: [], userRemoteConfig: [[url: 'https://github.com/nidhish-nanavati/myFirstRepository.git']]]) 
+   checkout([$class: 'GitSCM', brancgers: [[name: '*/main']], extensions: [], userRemoteConfig: [[url: 'https://github.com/nidhish-nanavati/mypart2project.git']]]) 
          }
   }
   
