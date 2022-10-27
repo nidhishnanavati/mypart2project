@@ -1,25 +1,27 @@
-pipeline
-{
-  agent any 
- tools { maven "Maven" }
- stages 
- {
-  stage("build maven")
-  {steps{ 
-   checkout([$class: 'GitSCM', brancgers: [[name: '*/main']], extensions: [], userRemoteConfig: [[url: 'https://github.com/nidhish-nanavati/myFirstRepository.git']]]) 
-         }
-  }
-  
-  stage('Dcoker Build and tag')
-  { steps{
-  sh 'docker build -t mysurvey .'
-  sh 'docker image tag mysurvey nidish98/mysurvey:latest'
-  }
-  }
-  
-  
-  
-  
-  
- }
+pipeline{
+    agent any
+    environment {
+        DOCKERHUB_PASS = credentials('docker-pass')
+    }
+    stages{
+        stage("Build a new version of app on new commit"){
+            steps{
+                script{
+                    checkout scm
+                    sh 'rm -rf *.var'
+                    sh 'jar -cvf mypart2project.war -C src/main/webapp .'
+                    sh 'echo ${env.BUILD_ID}'
+                    def customImage = docker.build("nidhish98/studentsurvey645:${env.BUILD_ID}")
+                    echo '${customImage}'
+                }
+            }
+        }
+        stage("Push image to docker hub"){
+            steps{
+                script{
+                    sh 'docker push nidhish98/studentsurvey645:${env.BUILD_ID}'
+                }
+            }
+        }
+    }
 }
